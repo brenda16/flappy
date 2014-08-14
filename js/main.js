@@ -12,7 +12,7 @@ var mainState = {
   //which is where we'll load our assets for the game  
   //set the background color of the game
   
-  game.stage.backgroundColor = "#cee3f8";
+  game.stage.backgroundColor = "#0A8FFE";
   
   game.load.image('bird','assets/bird.png');
   
@@ -29,6 +29,7 @@ create: function() {
   
   this.bird=this.game.add.sprite(100, 245, 'bird');
   
+  
   //now that we have 'bird' and gravity... we need to tell the bird
   //to react to the gravity
   
@@ -40,8 +41,16 @@ create: function() {
  var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
  
  spaceKey.onDown.add(this.jump, this);
+
+//add pipes 
+ this.pipes = game.add.group ();
+  this.pipes.enableBody =true;
+  
+  this.pipes.createMultiple(20, 'pipe');
+  this.timer = game.time.events.loop(1500,this.addRowOfPipes, this);
   
  },
+ 
  update: function () {
    //this function runs 60 times per second
    
@@ -52,6 +61,33 @@ if (this.bird.inWorld == false) {
   }
 
 
+},
+
+addOnePipe:function (x,y) {
+ //get the first dead pipe in group
+ var pipe = this. pipes. getFirstDead();
+ 
+ //set the pipe position
+ 
+ pipe.reset (x,y);
+ 
+ pipe.body.velocity.x = -200;
+ 
+ pipe.checkWorldBounds= true;
+ pipe. outOfBoundsKill = true;
+  
+},
+
+addRowOfPipes: function () {
+  var hole= Math.floor(Math.random()* 5)+ 1;
+
+for(var i =0; i < 8; i++)
+   if(i !=hole && i !=hole +1){
+     
+     this.addOnePipe(400,i*60 +10);
+     
+   }
+  
 },
 
 jump: function () {
